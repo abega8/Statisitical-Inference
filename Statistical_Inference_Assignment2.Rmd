@@ -1,0 +1,62 @@
+---
+title: "Statisitical Inference Assignment Part 2"
+author: "Bernard Akyena"
+date: "August 23, 2017"
+output:
+  word_document: default
+  html_document: default
+---
+
+
+# loading and exploring data
+
+```{r echo = TRUE}
+library(datasets)
+library(ggplot2)
+str(ToothGrowth)
+summary(ToothGrowth)
+```
+
+# Boxplot to compare both supplements across different dosages and identify which is better
+
+```{r echo = TRUE}
+data <- ToothGrowth
+levels(data$supp) <- c("Orange Juice", "Ascorbic Acid")
+g <- ggplot(data, aes(x = factor(dose), y = len))
+g <- g + facet_grid(.~supp)
+g <- g + geom_boxplot(aes(fill = supp))
+g <- g + labs(title = "Tooth Length by Dosage for Every Supplement")
+g <- g + labs(x = "Dose (mg/day)", y = "Tooth Length")
+print(g)
+```
+# From the plot we can infer that orange juice displays better tooth growth for 0.5 and 1mg/day dosages
+
+
+# Hypothesis Testing for doses = 0.5, 1 and 2
+
+```{r echo = TRUE}
+## For dose = 0.5 mg/day
+h0.5 <- t.test(len ~ supp, data = subset(data, dose == 0.5))
+h0.5$conf.int
+h0.5$p.value
+
+## For dose = 1 mg/day
+h1 <- t.test(len ~ supp, data = subset(data, dose == 1))
+h1$conf.int
+h1$p.value
+
+## For dose = 2 mg/day
+h2 <- t.test(len ~ supp, data = subset(data, dose == 2))
+h2$conf.int
+h2$p.value
+```
+# Conclusion:
+
+## H0.5: As p-value is smaller than the significance level of 0.05, null hypothesis can be rejected and hence we infer that Orange Juice and Ascorbic acid do not have the same effect on tooth growth and Orange Juice delivers more tooth growth.
+
+## h1: As p-value is smaller than the significance level of 0.05, null hypothesis can be rejected and hence we infer that Orange Juice and Ascorbic acid do not have the same effect on tooth growth and Orange Juice delivers more tooth growth.
+
+## h2: As p-value is larger than the significance level of 0.05, null hypothesis can't be rejected and hence we infer that Orange Juice and Ascorbic acid have the same effect on tooth growth.
+
+## Based on the three tests we can't conclude as a whole that Orange Juice is better than Ascorbic Acid for tooth growth in guinea pigs. However Orange Juice is certainly found better in doses of 0.5 and 1 mg/day as compared to Ascorbic Acid. Also the results align with the exploratory boxplot that we saw earlier.
+

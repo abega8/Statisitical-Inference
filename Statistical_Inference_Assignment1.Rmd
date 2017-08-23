@@ -1,0 +1,68 @@
+---
+title: "Statistical Inference Assignment Part 1"
+author: "Bernard Akyena"
+date: "August 23, 2017"
+output:
+  word_document: default
+  pdf_document: default
+  html_document: default
+---
+
+#Part 1
+
+#Simulations
+##Codes compare the distribution of avergaes of 40 exponentials for 1000 simulations
+
+```{r echo = TRUE}
+
+set.seed(145)
+lambda <- 0.2
+ranexp <- 40
+
+average <- NULL
+for(i in 1:1000)
+    average <- c(average, mean(rexp(ranexp, lambda)))
+```
+
+
+#Theoretical Mean
+
+```{r echo = TRUE}
+lambda ^ -1
+```
+
+#Sample Mean
+
+```{r echo = TRUE}
+mean(average)
+```
+There is very samll difference between the both means
+
+
+#Theoretical Variance
+
+```{r echo = TRUE}
+(lambda * sqrt(ranexp)) ^ -2
+```
+
+
+#Sample Variance
+
+```{r echo = TRUE}
+var(average)
+```
+ The variances exhibit very small differences
+ 
+ 
+#Distribution
+
+```{r echo = TRUE}
+library(ggplot2)
+m <- ggplot(data.frame(column = average), aes(x = column))
+m <- m + geom_histogram(aes(y = ..density..), binwidth = 0.2, fill = 'blue', color = 'black')
+m <- m + stat_function(fun = dnorm, args = list(mean = lambda^-1, sd=(lambda*sqrt(ranexp))^-1), size=2)
+m <- m + labs(title = "Distribution of Exponentials", x = "Simulation Means", y = "Density")
+m
+```
+Per the perfect overlay of the normal distribution on the histogram, we can conclude that the distribution of averages
+of a large samples of exponentials is really normal
